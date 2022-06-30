@@ -4,6 +4,7 @@ const Movie = require('../models/movie');
 // Импорт классов ошибок
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 // Получение массива фильмов
 const getMovies = (req, res, next) => {
@@ -65,10 +66,15 @@ const deleteMovie = (req, res, next) => {
     .orFail(() => {
       throw new NotFoundError('Фильма с таким id не найдено');
     })
-    .then((movie) => movie.remove()
-      .then(() => {
-        res.send({ message: 'Фильм удалён' });
-      }))
+    .then((movie) => {
+      if (!movie.owner.equals(req.user._id)) {
+        throw new ForbiddenError('Невозможно удалить фильм, созданный другим пользователем');
+      }
+      return movie.remove()
+        .then(() => {
+          res.send({ message: 'Фильм удалён' });
+        });
+    })
     .catch((err) => {
       next(err);
     });
