@@ -1,40 +1,14 @@
-const { Joi, celebrate } = require('celebrate');
 const auth = require('../middlewares/auth');
 const usersRouter = require('./users');
 const moviesRouter = require('./movies');
 const { createUser, login } = require('../controllers/users');
-
-const { validateLogin } = require('../utils/validation');
+const { validateLogin, validateRegistration } = require('../utils/validation');
 
 module.exports = (app) => {
   // Роут для входа в систему
-  // app.post(
-  //   '/signin',
-  //   celebrate({
-  //     body: Joi.object().keys({
-  //       email: Joi.string().required().email(),
-  //       password: Joi.string().required(),
-  //     }),
-  //   }),
-  //   login,
-  // );
-  app.post(
-    '/signin',
-    validateLogin,
-    login,
-  );
+  app.post('/signin', validateLogin, login);
   // Роут для регистрации
-  app.post(
-    '/signup',
-    celebrate({
-      body: Joi.object().keys({
-        email: Joi.string().required().email(),
-        password: Joi.string().required(),
-        name: Joi.string().min(2).max(30),
-      }),
-    }),
-    createUser,
-  );
+  app.post('/signup', validateRegistration, createUser);
   // Использовать мидлвэр с авторизацией для защиты нижеследующих роутов
   app.use(auth);
   // Роутинг для юзер-запросов
