@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-// const { errors, Joi, celebrate } = require('celebrate');
 const { errors } = require('celebrate');
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -9,14 +8,10 @@ require('dotenv').config();
 
 const { PORT = 3000, DB_PATH } = process.env;
 
-// Импорт логгеров, мидлвэров, роутов и т.д.
+// Импорт логгеров, роутов и т.д.
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-// const auth = require('./middlewares/auth');
-// const usersRouter = require('./routes/users');
-// const moviesRouter = require('./routes/movies');
-// const { createUser, login } = require('./controllers/users');
-const { NotFoundError } = require('./errors/NotFoundError');
 const router = require('./routes/index');
+const { NotFoundError } = require('./errors/NotFoundError');
 
 // Инициация приложения и подключение БД
 const app = express();
@@ -32,40 +27,6 @@ app.use(requestLogger);
 
 // Ипспользовать единый роутинг
 router(app);
-
-// // Роут для входа в систему
-// app.post(
-//   '/signin',
-//   celebrate({
-//     body: Joi.object().keys({
-//       email: Joi.string().required().email(),
-//       password: Joi.string().required(),
-//     }),
-//   }),
-//   login,
-// );
-
-// // Роут для регистрации
-// app.post(
-//   '/signup',
-//   celebrate({
-//     body: Joi.object().keys({
-//       email: Joi.string().required().email(),
-//       password: Joi.string().required(),
-//       name: Joi.string().min(2).max(30),
-//     }),
-//   }),
-//   createUser,
-// );
-
-// // Использовать мидлвэр с авторизацией для защиты нижеследующих роутов
-// app.use(auth);
-
-// // Роутинг для юзер-запросов
-// app.use('/users', usersRouter);
-
-// // Роутинг для запроса фильмов
-// app.use('/movies', moviesRouter);
 
 // Использовать проверку на неправильный путь
 app.use((req, res, next) => {

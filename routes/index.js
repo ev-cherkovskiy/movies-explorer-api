@@ -4,16 +4,23 @@ const usersRouter = require('./users');
 const moviesRouter = require('./movies');
 const { createUser, login } = require('../controllers/users');
 
+const { validateLogin } = require('../utils/validation');
+
 module.exports = (app) => {
   // Роут для входа в систему
+  // app.post(
+  //   '/signin',
+  //   celebrate({
+  //     body: Joi.object().keys({
+  //       email: Joi.string().required().email(),
+  //       password: Joi.string().required(),
+  //     }),
+  //   }),
+  //   login,
+  // );
   app.post(
     '/signin',
-    celebrate({
-      body: Joi.object().keys({
-        email: Joi.string().required().email(),
-        password: Joi.string().required(),
-      }),
-    }),
+    validateLogin,
     login,
   );
   // Роут для регистрации
