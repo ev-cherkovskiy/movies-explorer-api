@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const { errors, Joi, celebrate } = require('celebrate');
+// const { errors, Joi, celebrate } = require('celebrate');
+const { errors } = require('celebrate');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -10,11 +11,12 @@ const { PORT = 3000, DB_PATH } = process.env;
 
 // Импорт логгеров, мидлвэров, роутов и т.д.
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const auth = require('./middlewares/auth');
-const usersRouter = require('./routes/users');
-const moviesRouter = require('./routes/movies');
-const { createUser, login } = require('./controllers/users');
+// const auth = require('./middlewares/auth');
+// const usersRouter = require('./routes/users');
+// const moviesRouter = require('./routes/movies');
+// const { createUser, login } = require('./controllers/users');
 const { NotFoundError } = require('./errors/NotFoundError');
+const router = require('./routes/index');
 
 // Инициация приложения и подключение БД
 const app = express();
@@ -28,39 +30,42 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Использовать логгер запросов
 app.use(requestLogger);
 
-// Роут для входа в систему
-app.post(
-  '/signin',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-    }),
-  }),
-  login,
-);
+// Ипспользовать единый роутинг
+router(app);
 
-// Роут для регистрации
-app.post(
-  '/signup',
-  celebrate({
-    body: Joi.object().keys({
-      email: Joi.string().required().email(),
-      password: Joi.string().required(),
-      name: Joi.string().min(2).max(30),
-    }),
-  }),
-  createUser,
-);
+// // Роут для входа в систему
+// app.post(
+//   '/signin',
+//   celebrate({
+//     body: Joi.object().keys({
+//       email: Joi.string().required().email(),
+//       password: Joi.string().required(),
+//     }),
+//   }),
+//   login,
+// );
 
-// Использовать мидлвэр с авторизацией для защиты нижеследующих роутов
-app.use(auth);
+// // Роут для регистрации
+// app.post(
+//   '/signup',
+//   celebrate({
+//     body: Joi.object().keys({
+//       email: Joi.string().required().email(),
+//       password: Joi.string().required(),
+//       name: Joi.string().min(2).max(30),
+//     }),
+//   }),
+//   createUser,
+// );
 
-// Роутинг для юзер-запросов
-app.use('/users', usersRouter);
+// // Использовать мидлвэр с авторизацией для защиты нижеследующих роутов
+// app.use(auth);
 
-// Роутинг для запроса фильмов
-app.use('/movies', moviesRouter);
+// // Роутинг для юзер-запросов
+// app.use('/users', usersRouter);
+
+// // Роутинг для запроса фильмов
+// app.use('/movies', moviesRouter);
 
 // Использовать проверку на неправильный путь
 app.use((req, res, next) => {
