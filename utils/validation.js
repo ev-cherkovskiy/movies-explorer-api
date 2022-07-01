@@ -34,7 +34,7 @@ const validateMoviePosting = () => celebrate({
     image: Joi.string().required().custom(validateURL),
     trailerLink: Joi.string().required().custom(validateURL),
     thumbnail: Joi.string().required().custom(validateURL),
-    movieId: Joi.string().required(),
+    movieId: Joi.number().required(),
     nameRU: Joi.string().required().custom(validateTitleRU),
     nameEN: Joi.string().required().custom(validateTitleEN),
   }),
@@ -43,7 +43,7 @@ const validateMoviePosting = () => celebrate({
 // Функция для валидации данных при удалении фильма
 const validateMovieDeletion = () => celebrate({
   params: Joi.object().keys({
-    movieId: Joi.string().required(),
+    movieId: Joi.number().required(),
   }),
 });
 
