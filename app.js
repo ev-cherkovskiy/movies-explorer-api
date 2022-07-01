@@ -15,7 +15,8 @@ const { NotFoundError } = require('./errors/NotFoundError');
 
 // Инициация приложения и подключение БД
 const app = express();
-mongoose.connect(DB_PATH);
+const databasePath = DB_PATH || 'mongodb://localhost:27017/moviesdb';
+mongoose.connect(databasePath);
 
 // Использовать вспомогательные инструменты для работы с CORS и для обработки тела запроса
 app.use(cors());
@@ -38,15 +39,14 @@ app.use(errorLogger);
 
 // Использовать обработку ошибок с помощью celebrate и централизованный обработчик ошибок
 app.use(errors());
-// eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
   const statusCode = err.statusCode || 500;
   const message = (statusCode === 500) ? 'На сервере произошла ошибка' : err.message;
   res.status(statusCode).send({ message });
 });
 
 // Запуск приложения
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Приложение запущено на порту ${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`Приложение запущено на порту ${PORT}`);
+// });
+app.listen(PORT);
