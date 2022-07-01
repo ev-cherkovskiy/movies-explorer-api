@@ -1,4 +1,4 @@
-const { Joi, celebrate } = require('celebrate');
+const { Joi } = require('celebrate');
 const {
   validateURL,
   validateEmail,
@@ -6,25 +6,25 @@ const {
   validateTitleEN,
 } = require('./utils');
 
-// Функция для валидации данных при входе в систему
-const validateLogin = () => celebrate({
+// Схема для валидации данных при входе в систему
+const validateLogin = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
-});
+};
 
-// Функция для валидации данных при регистрации
-const validateRegistration = () => celebrate({
+// Схема для валидации данных при регистрации
+const validateRegistration = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
     name: Joi.string().min(2).max(30),
   }),
-});
+};
 
-// Функция для валидации данных при добавлении фильма
-const validateMoviePosting = () => celebrate({
+// Схема для валидации данных при добавлении фильма
+const validateMoviePosting = {
   body: Joi.object().keys({
     country: Joi.string().required(),
     director: Joi.string().required(),
@@ -38,24 +38,24 @@ const validateMoviePosting = () => celebrate({
     nameRU: Joi.string().required().custom(validateTitleRU),
     nameEN: Joi.string().required().custom(validateTitleEN),
   }),
-});
+};
 
-// Функция для валидации данных при удалении фильма
-const validateMovieDeletion = () => celebrate({
+// Схема для валидации данных при удалении фильма
+const validateMovieDeletion = {
   params: Joi.object().keys({
     movieId: Joi.number().required(),
   }),
-});
+};
 
-// Функция для валидации данных при редактировании профиля
-const validateProfileEdit = () => celebrate({
+// СХема для валидации данных при редактировании профиля
+const validateProfileEdit = {
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     email: Joi.string().required().custom(validateEmail),
   }),
-});
+};
 
-// Экспорт функций
+// Экспорт схем
 module.exports = {
   validateLogin,
   validateRegistration,
