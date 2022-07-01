@@ -34,7 +34,7 @@ const validateMoviePosting = {
     image: Joi.string().required().custom(validateURL),
     trailerLink: Joi.string().required().custom(validateURL),
     thumbnail: Joi.string().required().custom(validateURL),
-    movieId: Joi.number().required(),
+    movieId: Joi.number().strict().required(),
     nameRU: Joi.string().required().custom(validateTitleRU),
     nameEN: Joi.string().required().custom(validateTitleEN),
   }),
