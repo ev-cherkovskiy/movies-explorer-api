@@ -43,7 +43,7 @@ const validateMoviePosting = {
 // Схема для валидации данных при удалении фильма
 const validateMovieDeletion = {
   params: Joi.object().keys({
-    movieId: Joi.number().required(),
+    movieId: Joi.string().hex().length(24),
   }),
 };
 

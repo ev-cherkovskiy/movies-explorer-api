@@ -18,7 +18,6 @@ const getUserInfo = (req, res, next) => {
       throw new NotFoundError('Пользователя с таким id не найдено');
     })
     .then((user) => {
-      // res.send({ data: user });
       res.send({ user });
     })
     .catch((err) => {
@@ -29,13 +28,20 @@ const getUserInfo = (req, res, next) => {
 // Редактирование имени и почты пользователя
 const editProfile = (req, res, next) => {
   const { name, email } = req.body;
-  User.findByIdAndUpdate(
-    req.user._id,
-    { name, email },
-    { new: true, runValidators: true },
-  )
-    // .then((user) => res.send({ data: user }))
-    .then((user) => res.send({ user }))
+  User.findOne({ email })
+    .then((user) => {
+      if (user && !user._id.equals(req.user._id)) {
+        throw new ConflictError('Пользователь с таким email уже зарегистрирован');
+      }
+    })
+    .then(() => {
+      User.findByIdAndUpdate(
+        req.user._id,
+        { name, email },
+        { new: true, runValidators: true },
+      )
+        .then((user) => res.send({ user }));
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Некорректные данные'));
@@ -51,21 +57,13 @@ const createUser = (req, res, next) => {
   User.findOne({ email })
     .then((user) => {
       if (user) {
-        next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
+        throw new ConflictError('Пользователь с таким email уже зарегистрирован');
       }
       return bcrypt.hash(password, 10);
     })
     .then((hash) => {
       User.create({ name, email, password: hash })
-        .then((user) => {
-          // eslint-disable-next-line no-shadow
-          const { name, email } = user;
-          // res.send({
-          //   data: {
-          //     name,
-          //     email,
-          //   },
-          // });
+        .then(() => {
           res.send({ name, email });
         })
         .catch((err) => {

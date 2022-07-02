@@ -10,7 +10,6 @@ const ForbiddenError = require('../errors/ForbiddenError');
 const getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
     .then((movies) => {
-      // res.send({ data: movies });
       res.send({ movies });
     })
     .catch((err) => {
@@ -48,7 +47,6 @@ const createMovie = (req, res, next) => {
     owner: req.user._id,
   })
     .then((movie) => {
-      // res.send({ data: movie });
       res.send({ movie });
     })
     .catch((err) => {

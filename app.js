@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const helmet = require('helmet');
 
 require('dotenv').config();
 
@@ -12,14 +13,17 @@ const { PORT = 3000, DB_PATH } = process.env;
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes/index');
 const { NotFoundError } = require('./errors/NotFoundError');
+const { limiter } = require('./middlewares/limiter');
 
 // Инициация приложения и подключение БД
 const app = express();
 const databasePath = DB_PATH || 'mongodb://localhost:27017/moviesdb';
 mongoose.connect(databasePath);
 
-// Использовать вспомогательные инструменты для работы с CORS и для обработки тела запроса
+// Использовать вспомогательные инструменты
+app.use(helmet());
 app.use(cors());
+app.use(limiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -46,7 +50,4 @@ app.use((err, req, res) => {
 });
 
 // Запуск приложения
-// app.listen(PORT, () => {
-//   console.log(`Приложение запущено на порту ${PORT}`);
-// });
 app.listen(PORT);
