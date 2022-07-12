@@ -20,15 +20,15 @@ const app = express();
 const databasePath = DB_PATH || 'mongodb://localhost:27017/moviesdb';
 mongoose.connect(databasePath);
 
+// Использовать логгер запросов
+app.use(requestLogger);
+
 // Использовать вспомогательные инструменты
 app.use(helmet());
 app.use(cors());
 app.use(limiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Использовать логгер запросов
-app.use(requestLogger);
 
 // Ипспользовать единый роутинг
 router(app);
