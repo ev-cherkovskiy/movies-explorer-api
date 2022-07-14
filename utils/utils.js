@@ -18,7 +18,7 @@ const validateEmail = (value) => {
 
 // Кастомная валидация названия на русском
 const validateTitleRU = (value) => {
-  const regExp = /[а-яё0-9!?.,;:]+\s*/gmi;
+  const regExp = /[а-яё0-9a-z!?.,;:"-]+\s*/gmi;
   if (!value.match(regExp)) {
     throw new Error('Некорректное название на русском');
   }
@@ -27,7 +27,7 @@ const validateTitleRU = (value) => {
 
 // Кастомная валидация названия на английском
 const validateTitleEN = (value) => {
-  const regExp = /[a-z0-9!?.,;:]+\s*/gmi;
+  const regExp = /[a-z0-9!?.,;:"'`-]+\s*/gmi;
   if (!value.match(regExp)) {
     throw new Error('Некорректное название на английском');
   }
